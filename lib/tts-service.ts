@@ -89,7 +89,11 @@ async function synthesizeMinimax(text: string, config: VoiceApiConfig, emotion?:
         voiceSetting.emotion = normalizedEmotion;
     }
 
-    const response = await fetchWithTimeout(`${baseUrl}/t2a_v2`, {
+    let url = `${baseUrl}/t2a_v2`;
+    if (baseUrl.includes("/t2a_v2")) {
+        url = baseUrl;
+    }
+    const response = await fetchWithTimeout(url, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${config.apiKey}`,
