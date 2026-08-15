@@ -69,7 +69,11 @@ async function handleGetVoices(request: Request) {
 
     if (!apiKey) return NextResponse.json({ error: "missing_api_key" }, { status: 400 });
 
-    const response = await proxyFetch(`${baseUrl}/get_voice`, {
+    let url = `${baseUrl}/get_voice`;
+    if (baseUrl.includes("/t2a_v2")) {
+        url = baseUrl.replace(/\/t2a_v2$/, "/get_voice");
+    }
+    const response = await proxyFetch(url, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${apiKey}`,
