@@ -88,7 +88,11 @@ async function handleClone(request: Request) {
     uploadForm.set("purpose", "voice_clone");
     uploadForm.set("file", audio, audio.name || "voice-sample.mp3");
 
-    const uploadResponse = await proxyFetch(`${baseUrl}/files/upload`, {
+    let uploadUrl = `${baseUrl}/files/upload`;
+    if (baseUrl.includes("/t2a_v2")) {
+        uploadUrl = baseUrl.replace(/\/t2a_v2$/, "/files/upload");
+    }
+    const uploadResponse = await proxyFetch(uploadUrl, {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}` },
         body: uploadForm,
@@ -112,7 +116,11 @@ async function handleClone(request: Request) {
         return NextResponse.json({ error: "missing_file_id", message: uploadText.slice(0, 500) }, { status: 502 });
     }
 
-    const cloneResponse = await proxyFetch(`${baseUrl}/voice_clone`, {
+    let cloneUrl = `${baseUrl}/voice_clone`;
+    if (baseUrl.includes("/t2a_v2")) {
+        cloneUrl = baseUrl.replace(/\/t2a_v2$/, "/voice_clone");
+    }
+    const cloneResponse = await proxyFetch(cloneUrl, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${apiKey}`,
